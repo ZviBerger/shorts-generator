@@ -1,34 +1,18 @@
-import {spring} from 'remotion';
 import {
 	AbsoluteFill,
 	interpolate,
 	Sequence,
 	useCurrentFrame,
 	useVideoConfig,
+	
 } from 'remotion';
-import {Logo} from './Logo';
 import {Subtitle} from './Subtitle';
 import {Title} from './Title';
+import { staticFile, Video } from "remotion";
 
-export const HelloWorld = ({titleText, titleColor}) => {
+export const HelloWorld = ({titleText, text1, text2, video }) => {
 	const frame = useCurrentFrame();
-	const {durationInFrames, fps} = useVideoConfig();
-
-	// Animate from 0 to 1 after 25 frames
-	const logoTranslationProgress = spring({
-		frame: frame - 25,
-		fps,
-		config: {
-			damping: 100,
-		},
-	});
-
-	// Move the logo up by 150 pixels once the transition starts
-	const logoTranslation = interpolate(
-		logoTranslationProgress,
-		[0, 1],
-		[0, -150]
-	);
+	const {durationInFrames } = useVideoConfig();
 
 	// Fade out the animation at the end
 	const opacity = interpolate(
@@ -44,17 +28,23 @@ export const HelloWorld = ({titleText, titleColor}) => {
 	// A <AbsoluteFill> is just a absolutely positioned <div>!
 	return (
 		<AbsoluteFill style={{backgroundColor: 'white'}}>
-			<AbsoluteFill style={{opacity}}>
-				<AbsoluteFill style={{transform: `translateY(${logoTranslation}px)`}}>
-					<Logo />
+			<AbsoluteFill style={{ opacity }}>
+			<Sequence  durationInFrames={650}>
+			<AbsoluteFill style={{transform: `translateY(${1}}px) scale(1)`}}>
+				<Video loop src={staticFile(`videos/${video}`)} />
 				</AbsoluteFill>
+				</Sequence>
+				
 				{/* Sequences can shift the time for its children! */}
-				<Sequence from={35}>
-					<Title titleText={titleText} titleColor={titleColor} />
+				<Sequence  durationInFrames={600}>
+					<Title titleText={titleText} />
 				</Sequence>
 				{/* The subtitle will only enter on the 75th frame. */}
-				<Sequence from={75}>
-					<Subtitle />
+				<Sequence  durationInFrames={205}>
+					<Subtitle text={text1} />
+				</Sequence>
+				<Sequence from={250} durationInFrames={200}>
+					<Subtitle text={text2} />
 				</Sequence>
 			</AbsoluteFill>
 		</AbsoluteFill>

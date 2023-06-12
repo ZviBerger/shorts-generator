@@ -1,49 +1,42 @@
 import React from 'react';
-import {spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {interpolate, useCurrentFrame} from 'remotion';
 import {FONT_FAMILY} from './constants';
 
-const title: React.CSSProperties = {
+const title = {
 	fontFamily: FONT_FAMILY,
 	fontWeight: 'bold',
 	fontSize: 100,
 	textAlign: 'center',
-	position: 'absolute',
-	bottom: 160,
-	width: '100%',
+	margin: 'auto',
+	background: '#00000078',
+	borderRadius: 20,
+	marginTop: '250px',
+	padding: 20,
 };
 
-const word: React.CSSProperties = {
+const word = {
 	marginLeft: 10,
 	marginRight: 10,
 	display: 'inline-block',
 };
 
-export const Title = ({titleText, titleColor}) => {
-	const videoConfig = useVideoConfig();
+export const Title = ({titleText}) => {
 	const frame = useCurrentFrame();
+	const opacity = interpolate(frame, [0, 30], [0, 1]);
 
-	const words = titleText.split(' ');
+
+	const words = [titleText];
 
 	return (
 		<h1 style={title}>
-			{words.map((t, i) => {
-				const delay = i * 5;
-
-				const scale = spring({
-					fps: videoConfig.fps,
-					frame: frame - delay,
-					config: {
-						damping: 200,
-					},
-				});
-
+			{words.map((t) => {
 				return (
 					<span
 						key={t}
 						style={{
 							...word,
-							color: titleColor,
-							transform: `scale(${scale})`,
+							color: '#fff',
+							opacity,
 						}}
 					>
 						{t}
